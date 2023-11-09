@@ -1,33 +1,42 @@
+import random
 import discord
 from discord.ext import commands
-import os
 
-from help_cog import help_cog
-from music_cog import music_cog
-class MyClient(discord.Client):
-    async def on_ready(self):
-        print(f'siema {self.user}!')
+def run():
+    intents = discord.Intents.default()
+    intents.message_content = True
 
-    async def on_message(self, message):
-        print(f'Message from {message.author}: {message.content}')
+    bot = commands.Bot(command_prefix='!', intents=intents)
 
-intents = discord.Intents.default()
-intents.message_content = True
+    @bot.event
+    async def on_ready():
+        print(bot.user)
+        print(bot.user.id)
 
-client = MyClient(intents=intents)
+    @bot.command(
+        aliases=['p'],
+        help="Pomoc",
+        description='To jest opis',
+        brief='To jest brief',
+        enabled=True,
+        hidden=True
+    )
+    async def ping(ctx):
+        """ Odpowiada pong"""
+        await ctx.send('pong')
+    @bot.command()
+    async def say(ctx, what = "co ty pierdolisz?"):
+        await ctx.send(what)
+    @bot.command()
+    async def say2(ctx, *what):
+        await ctx.send(" ".join(what))
+    @bot.command()
+    async def dodaj(ctx, jeden:int, dwa:int):
+        await ctx.send(jeden+dwa)
 
-@client.event
-async def on_ready():
-    print(f'Zalogowano jako {client.user}')
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
 
-    if message.content.startswith('!siema'):
-        await message.channel.send('siemano')
-    if message.content.startswith('!ile razy sie rozjebales'):
-        await message.channel.send('69')
 
-client.run('MTE3MTc1Nzk2MjY1NDY2MjczOQ.GdXaQi.bU7xAvpxcGRJGma_L88rpB-4G4r-NYOATNKv4M')
+    bot.run('MTE3MTc1Nzk2MjY1NDY2MjczOQ.GdXaQi.bU7xAvpxcGRJGma_L88rpB-4G4r-NYOATNKv4M')
+if __name__ == "__main__":
+    run()
